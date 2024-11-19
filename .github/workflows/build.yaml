@@ -1,9 +1,10 @@
 name: build
 on:
   push:
-    branches:
-      - master
+    branches: [ "master" ]
   pull_request:
+    branches: [ "master" ]
+  workflow_dispatch:
 
 jobs:
   build_aarch64_softmmu_linux:
