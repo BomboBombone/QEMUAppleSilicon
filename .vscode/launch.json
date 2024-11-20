@@ -8,8 +8,8 @@
             "program": "${workspaceFolder}/build/qemu-system-aarch64",
             "args": [
                 "-s",
-                "-M", "t8030",
-                "-kernel", "kernelcache.research.iphone12b",
+                "-M", "t8030,trustcache=Firmware/038-44135-124.dmg.trustcache",
+                "-kernel", "kernelcache.release.iphone12b",
                 "-dtb", "Firmware/all_flash/DeviceTree.n104ap.im4p",
                 "-append", "debug=0x14e kextlog=0xffff serial=3 -v wdt=-1",
                 "-initrd", "038-44135-124.dmg",
