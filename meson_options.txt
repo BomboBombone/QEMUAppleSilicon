@@ -168,7 +168,7 @@ option('curses', type : 'feature', value : 'auto',
        description: 'curses UI')
 option('gnutls', type : 'feature', value : 'auto',
        description: 'GNUTLS cryptography support')
-option('nettle', type : 'feature', value : 'auto',
+option('nettle', type : 'feature', value : 'enabled',
        description: 'nettle cryptography support')
 option('gcrypt', type : 'feature', value : 'auto',
        description: 'libgcrypt cryptography support')
