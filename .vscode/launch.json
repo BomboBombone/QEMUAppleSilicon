@@ -5,7 +5,7 @@
             "name": "GDB QEMU",
             "type": "cppdbg",
             "request": "launch",
-            "program": "/home/bombo/vscode/QEMUAppleSilicon/build/qemu-system-aarch64",
+            "program": "${workspaceFolder}/build/qemu-system-aarch64",
             "args": [
                 "-s",
                 "-M", "t8030",
