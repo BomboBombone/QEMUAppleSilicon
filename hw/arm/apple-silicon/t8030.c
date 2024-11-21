@@ -811,146 +811,199 @@ static void pmgr_unk_reg_write(void *opaque, hwaddr addr, uint64_t data,
 
 static uint64_t pmgr_unk_reg_read(void *opaque, hwaddr addr, unsigned size)
 {
-    MachineState *machine = MACHINE(qdev_get_machine());
-    T8030MachineState *tms = T8030_MACHINE(machine);
-    AppleSEPState *sep;
+//    MachineState *machine = MACHINE(qdev_get_machine());
+//    T8030MachineState *tms = T8030_MACHINE(machine);
+//    AppleSEPState *sep;
+//    hwaddr base = (hwaddr)opaque;
+//    sep = APPLE_SEP(object_property_get_link(OBJECT(machine), "sep", &error_fatal));
+//
+//#if 1
+//    if ((((base + addr) & 0xfffffffb) != 0x10E20020) && 
+//        (((base + addr) & 0xfffffffb) != 0x11E20020)
+//    ) {
+//    qemu_log_mask(LOG_UNIMP,
+//                  "PMGR reg READ unk @ 0x" TARGET_FMT_lx
+//                  " base: 0x" TARGET_FMT_lx "\n",
+//                  base + addr, base);
+//    }
+//#endif
+//    uint32_t chip_revision;
+//    uint64_t board_id;
+//    uint64_t security_epoch; // On IMG4: Security Epoch ; On IMG3: Minimum Epoch, verified on SecureROM s5l8955xsi
+//    int current_prod = 1;
+//    int current_secure_mode = 1; // T8015 SEPOS Kernel also requires this.
+//    int security_domain = 1;
+//    int raw_prod = 1;
+//    int raw_secure_mode = 1;
+//    //chip_revision = 0x01;
+//    chip_revision = 0x11;
+//    //board_id = 0x4;
+//    board_id = tms->board_id;
+//    security_epoch = 0x1;
+//    //current_prod = raw_prod = current_secure_mode = raw_secure_mode = 0;
+//    switch (base + addr) {
+//    case 0x3D280088: // PMGR_AON
+//        return 0xFF;
+//    case 0x3D2BC000: // CURRENT_PROD?
+//    case 0x3D2BC400: // ??? maybe T8030 current_prod???
+//        if (current_prod == 1)
+//            return 0xA55AC33C; // IBFL | 0x10
+//        return 0xA050C030; // IBFL | 0x00
+//#if 0
+//    case 0x3D2BC400: // ??? maybe T8030 current_prod???
+//        // if 0xBC404 returns 1==0xA55AC33C, this will get ignored
+//        // return 0xA050C030; // CPFM | 0x00 ; IBFL_base == 0x04
+//        return 0xA55AC33C; // CPFM | 0x03 ; IBFL_base == 0x0C
+//#endif
+//    case 0x3D2BC200: // RAW_PROD T8020 AP/SEP
+//        //if (sep->pmgr_base_regs[0x68] != 0) // if T8020 AP/SEP current_prod and raw_prod are disabled, scrd sets a flag
+//        //    return 0xA050C030;
+//        //return 0xA55AC33C; // IBFL | 0x10
+//        //return 0xA050C030; // not prod. breaks SEPROM
+//        if (raw_prod == 1)
+//            return 0xA55AC33C; // IBFL | 0x10
+//        return 0xA050C030; // IBFL | 0x00
+//    case 0x3D2BC004: // Current Secure Mode SEP T8020
+//    case 0x3D2BC404: // maybe T8030 current secure mode???
+//        if (current_secure_mode)
+//            return 0xA55AC33C; // CPFM | 0x01 ; IBFL_base == 0x0C
+//        return 0xA050C030; // CPFM | 0x00 ; IBFL_base == 0x04
+//    case 0x3D2BC204: // Raw Secure Mode AP/SEP T8020
+//    case 0x3D2BC604: //? maybe also raw secure mode for T8030???
+//        if (raw_secure_mode)
+//            return 0xA55AC33C; // CPFM | 0x01 ; IBFL_base == 0x0C
+//        return 0xA050C030;
+//#if 0
+//    case 0x3D2BC604: //? maybe also raw secure mode for T8030???
+//        return 0xA050C030;
+//#endif
+//    case 0x3D2BC008:
+//    case 0x3D2BC208: // Security (raw?) Domain BIT0 T8020 SEP
+//        if ((security_domain & (1 << 0)) != 0)
+//            return 0xA55AC33C; // security domain | 0x1
+//        return 0xA050C030;
+//    case 0x3D2BC00C:
+//    case 0x3D2BC20C: // Security Domain (raw?) BIT1 T8020 SEP
+//        if ((security_domain & (1 << 1)) != 0)
+//            return 0xA55AC33C; // security domain | 0x2
+//        return 0xA050C030; // security domain | 0x0
+//    case 0x3D2BC010:
+//    case 0x3D2BC210: // (raw?) board id/minimum epoch? //CEPO? SEPO? AppleSEPROM-A12-D331pAP
+//        //uint64_t sep_bit30 = 0;
+//        uint64_t sep_bit30 = ((sep->pmgr_base_regs[0x8000] & 0x1) != 0);
+//        //return (1 << 5) | (0 << 30) | (1 << 31); // _rCFG_FUSE0 ; (security epoch & 0x7F) << 5 ;; (0 << 30) | (1 << 31) for SEP
+//        return (board_id & 0x7) | ((security_epoch & 0x7f) << 5) | (sep_bit30 << 30) | (1 << 31); // (security epoch & 0x7F) << 5 ;; (sep_bit30 << 30) for SEP | (1 << 31) for SEP and AP
+//    case 0x3D2BC020: // T8030 iBSS: FUN_19c07feac_return_value_causes_crash; same address on T8020 iBoot, but possibly different handling
+//        if (1)
+//            return 0xA55AC33C;
+//        return 0xA050C030; // causes panic, so does a invalid value
+//    case 0x3D2BC02c: // Unknown SEP T8020
+//        //return 0xc000ce71;
+//        //return 0 << 30; // no panic
+//        //return (1 << 31) | (1 << 30); // panic
+//        return (0 << 31) | (1 << 30); // // bit31 causes a panic
+//    case 0x3D2BC030: // CPRV (Chip Revision) T8030 T8020
+//        //return 0xa6016242;
+//        //return ((chip_revision & 0x7) << 6) | (((chip_revision & 0x70) >> 4) << 5); // LOW&HIGH NIBBLE T8030, T8020 and AppleSEPROM-S4-S5-B1 // maybe 0x1c0 instead of 0x7
+//        //return ((chip_revision & 0x7) << 6) | (((chip_revision & 0x70) >> 4) << 5) | (1 << 1); // LOW&HIGH NIBBLE T8030, T8020 and AppleSEPROM-S4-S5-B1 // maybe 0x1c0 instead of 0x7
+//        return ((chip_revision & 0x7) << 6) | (((chip_revision & 0x70) >> 4) << 5) | (0 << 1); // LOW&HIGH NIBBLE T8030, T8020 and AppleSEPROM-S4-S5-B1 // maybe 0x1c0 instead of 0x7 ; bit1 being set causes kernel data abort
+//    case 0x3D2BC100: // ECID LOW T8020
+//    case 0x3D2BC300: // TODO
+//    case 0x352bc080: // ECID LOW T8015
+//        return tms->ecid & 0xffffffff; // ECID lower
+//    case 0x3D2BC104: // ECID HIGH T8020
+//    case 0x3D2BC304: // TODO
+//    case 0x352bc084: // ECID HIGH T8015
+//        return tms->ecid >> 32; // ECID upper
+//    case 0x3D2BC10c: // T8020 SEP Chip Revision?
+//    //case 0x3D2BC30c: // Maybe the T8030 SEP equivalent?
+//        // 1 vs. not 1: TRNG/Monitor
+//        // 0 vs. not 0: Monitor
+//        // 2 vs. not 2: ARTM
+//        // Production SARS doesn't like value (0 << 28) in combination with kbkdf_index being 0
+//        //return 0; // 0
+//        //return 2 << 28; // 1
+//        //return 3 << 28; // 1
+//        return 8 << 28; // 2
+//    case 0x3D2E8000: // ????
+//        //return 0x32B3; // memory encryption AMK (Authentication Master Key) disabled
+//        return 0xC2E9; // memory encryption AMK (Authentication Master Key) enabled
+//    case 0x3D2E4800: // ???? 0x240002c00 and 0x2400037a4
+//        //////return 0x3; // 0x2400037a4
+//        return pmgr_unk_e4800; // 0x240002c00 and 0x2400037a4
+//    case 0x3D2E4000 ... 0x3D2E417f: // ???? 0x24000377c
+//        return pmgr_unk_e4000[((base + addr) - 0x3D2E4000)/4]; // 0x24000377c
+//    /* BEGIN: from T8030 AP AES */
+//    case 0x3d2d0020: //! board-id
+//        //return 0x4;
+//        return tms->board_id;
+//    case 0x3d2d0034: //? bit 24 = is first boot ; bit 25 = something with memory encryption?
+//        return (1 << 24) | (1 << 25);
+//        //return (1 << 24) | (0 << 25);
+//    /* END: from T8030 AP AES */
+//    ///
+//    case 0x352bc000: // CURRENT_PROD T8015 AP
+//        return (current_prod << 0) | (current_secure_mode << 1) | ((security_domain & 3) << 2) | ((board_id & 7) << 4) | ((security_epoch & 0x7f) << 9);
+//    case 0x352bc200: // RAW_PROD T8015 AP
+//        return (raw_prod << 0) | (raw_secure_mode << 1);
+//    case 0x352bc018: // CPRV (Chip Revision) T8015
+//        return ((chip_revision & 0x7) << 8) | (((chip_revision & 0x70) >> 4) << 11);
+//    case 0x3c100c4c:
+//        return 0x1;
+//    ///
+//    default:
+//        if (((base + addr) & 0x10E70000) == 0x10E70000) {
+//            return (108 << 4) | 0x200000; //?
+//        }
+//        return 0;
+//    }
     hwaddr base = (hwaddr)opaque;
-    sep = APPLE_SEP(object_property_get_link(OBJECT(machine), "sep", &error_fatal));
 
-#if 1
-    if ((((base + addr) & 0xfffffffb) != 0x10E20020) && 
-        (((base + addr) & 0xfffffffb) != 0x11E20020)
-    ) {
+#if 0
     qemu_log_mask(LOG_UNIMP,
                   "PMGR reg READ unk @ 0x" TARGET_FMT_lx
                   " base: 0x" TARGET_FMT_lx "\n",
                   base + addr, base);
-    }
 #endif
-    uint32_t chip_revision;
-    uint64_t board_id;
-    uint64_t security_epoch; // On IMG4: Security Epoch ; On IMG3: Minimum Epoch, verified on SecureROM s5l8955xsi
-    int current_prod = 1;
-    int current_secure_mode = 1; // T8015 SEPOS Kernel also requires this.
-    int security_domain = 1;
-    int raw_prod = 1;
-    int raw_secure_mode = 1;
-    //chip_revision = 0x01;
-    chip_revision = 0x11;
-    //board_id = 0x4;
-    board_id = tms->board_id;
-    security_epoch = 0x1;
-    //current_prod = raw_prod = current_secure_mode = raw_secure_mode = 0;
     switch (base + addr) {
     case 0x3D280088: // PMGR_AON
         return 0xFF;
-    case 0x3D2BC000: // CURRENT_PROD?
-    case 0x3D2BC400: // ??? maybe T8030 current_prod???
-        if (current_prod == 1)
-            return 0xA55AC33C; // IBFL | 0x10
-        return 0xA050C030; // IBFL | 0x00
-#if 0
-    case 0x3D2BC400: // ??? maybe T8030 current_prod???
+    case 0x3D2BC000:
+        // return 0xA050C030; // IBFL | 0x00
+        return 0xA55AC33C; // IBFL | 0x10
+    case 0x3D2BC008:
+        return 0xA55AC33C; // security domain | 0x1
+    case 0x3D2BC00C:
+        // return 0xA55AC33C; // security domain | 0x2
+        return 0xA050C030; // security domain | 0x0
+    case 0x3D2BC010:
+        return (1 << 5) | (1 << 31); // _rCFG_FUSE0 ; (security epoch & 0x7F) <<
+                                     // 5 ;; (1 << 31) for SEP
+    case 0x3D2BC030:
+        // return 0xFFFFFFFF; // CPRV
+        // return 0x7 << 6; // LOW NIBBLE
+        // return 0x70 << 5; // HIGH NIBBLE
+        return 0x1 << 6;
+    case 0x3D2BC300: // TODO
+        return 0xCAFEBABE; // ECID lower
+    case 0x3D2BC304: // TODO
+        return 0xDEADBEEF; // ECID upper
+    case 0x3D2BC400:
         // if 0xBC404 returns 1==0xA55AC33C, this will get ignored
         // return 0xA050C030; // CPFM | 0x00 ; IBFL_base == 0x04
         return 0xA55AC33C; // CPFM | 0x03 ; IBFL_base == 0x0C
-#endif
-    case 0x3D2BC200: // RAW_PROD T8020 AP/SEP
-        //if (sep->pmgr_base_regs[0x68] != 0) // if T8020 AP/SEP current_prod and raw_prod are disabled, scrd sets a flag
-        //    return 0xA050C030;
-        //return 0xA55AC33C; // IBFL | 0x10
-        //return 0xA050C030; // not prod. breaks SEPROM
-        if (raw_prod == 1)
-            return 0xA55AC33C; // IBFL | 0x10
-        return 0xA050C030; // IBFL | 0x00
-    case 0x3D2BC004: // Current Secure Mode SEP T8020
-    case 0x3D2BC404: // maybe T8030 current secure mode???
-        if (current_secure_mode)
-            return 0xA55AC33C; // CPFM | 0x01 ; IBFL_base == 0x0C
+    case 0x3D2BC404:
+        // return 0xA55AC33C; // CPFM | 0x01 ; IBFL_base == 0x0C
         return 0xA050C030; // CPFM | 0x00 ; IBFL_base == 0x04
-    case 0x3D2BC204: // Raw Secure Mode AP/SEP T8020
-    case 0x3D2BC604: //? maybe also raw secure mode for T8030???
-        if (raw_secure_mode)
-            return 0xA55AC33C; // CPFM | 0x01 ; IBFL_base == 0x0C
+    case 0x3D2BC604: //?
         return 0xA050C030;
-#if 0
-    case 0x3D2BC604: //? maybe also raw secure mode for T8030???
-        return 0xA050C030;
-#endif
-    case 0x3D2BC008:
-    case 0x3D2BC208: // Security (raw?) Domain BIT0 T8020 SEP
-        if ((security_domain & (1 << 0)) != 0)
-            return 0xA55AC33C; // security domain | 0x1
-        return 0xA050C030;
-    case 0x3D2BC00C:
-    case 0x3D2BC20C: // Security Domain (raw?) BIT1 T8020 SEP
-        if ((security_domain & (1 << 1)) != 0)
-            return 0xA55AC33C; // security domain | 0x2
-        return 0xA050C030; // security domain | 0x0
-    case 0x3D2BC010:
-    case 0x3D2BC210: // (raw?) board id/minimum epoch? //CEPO? SEPO? AppleSEPROM-A12-D331pAP
-        //uint64_t sep_bit30 = 0;
-        uint64_t sep_bit30 = ((sep->pmgr_base_regs[0x8000] & 0x1) != 0);
-        //return (1 << 5) | (0 << 30) | (1 << 31); // _rCFG_FUSE0 ; (security epoch & 0x7F) << 5 ;; (0 << 30) | (1 << 31) for SEP
-        return (board_id & 0x7) | ((security_epoch & 0x7f) << 5) | (sep_bit30 << 30) | (1 << 31); // (security epoch & 0x7F) << 5 ;; (sep_bit30 << 30) for SEP | (1 << 31) for SEP and AP
-    case 0x3D2BC020: // T8030 iBSS: FUN_19c07feac_return_value_causes_crash; same address on T8020 iBoot, but possibly different handling
-        if (1)
-            return 0xA55AC33C;
-        return 0xA050C030; // causes panic, so does a invalid value
-    case 0x3D2BC02c: // Unknown SEP T8020
-        //return 0xc000ce71;
-        //return 0 << 30; // no panic
-        //return (1 << 31) | (1 << 30); // panic
-        return (0 << 31) | (1 << 30); // // bit31 causes a panic
-    case 0x3D2BC030: // CPRV (Chip Revision) T8030 T8020
-        //return 0xa6016242;
-        //return ((chip_revision & 0x7) << 6) | (((chip_revision & 0x70) >> 4) << 5); // LOW&HIGH NIBBLE T8030, T8020 and AppleSEPROM-S4-S5-B1 // maybe 0x1c0 instead of 0x7
-        //return ((chip_revision & 0x7) << 6) | (((chip_revision & 0x70) >> 4) << 5) | (1 << 1); // LOW&HIGH NIBBLE T8030, T8020 and AppleSEPROM-S4-S5-B1 // maybe 0x1c0 instead of 0x7
-        return ((chip_revision & 0x7) << 6) | (((chip_revision & 0x70) >> 4) << 5) | (0 << 1); // LOW&HIGH NIBBLE T8030, T8020 and AppleSEPROM-S4-S5-B1 // maybe 0x1c0 instead of 0x7 ; bit1 being set causes kernel data abort
-    case 0x3D2BC100: // ECID LOW T8020
-    case 0x3D2BC300: // TODO
-    case 0x352bc080: // ECID LOW T8015
-        return tms->ecid & 0xffffffff; // ECID lower
-    case 0x3D2BC104: // ECID HIGH T8020
-    case 0x3D2BC304: // TODO
-    case 0x352bc084: // ECID HIGH T8015
-        return tms->ecid >> 32; // ECID upper
-    case 0x3D2BC10c: // T8020 SEP Chip Revision?
-    //case 0x3D2BC30c: // Maybe the T8030 SEP equivalent?
-        // 1 vs. not 1: TRNG/Monitor
-        // 0 vs. not 0: Monitor
-        // 2 vs. not 2: ARTM
-        // Production SARS doesn't like value (0 << 28) in combination with kbkdf_index being 0
-        //return 0; // 0
-        //return 2 << 28; // 1
-        //return 3 << 28; // 1
-        return 8 << 28; // 2
     case 0x3D2E8000: // ????
-        //return 0x32B3; // memory encryption AMK (Authentication Master Key) disabled
-        return 0xC2E9; // memory encryption AMK (Authentication Master Key) enabled
-    case 0x3D2E4800: // ???? 0x240002c00 and 0x2400037a4
-        //////return 0x3; // 0x2400037a4
-        return pmgr_unk_e4800; // 0x240002c00 and 0x2400037a4
-    case 0x3D2E4000 ... 0x3D2E417f: // ???? 0x24000377c
-        return pmgr_unk_e4000[((base + addr) - 0x3D2E4000)/4]; // 0x24000377c
-    /* BEGIN: from T8030 AP AES */
-    case 0x3d2d0020: //! board-id
-        //return 0x4;
-        return tms->board_id;
-    case 0x3d2d0034: //? bit 24 = is first boot ; bit 25 = something with memory encryption?
+        return 0x32B3; // memory encryption AMK (Authentication Master Key)
+                       // disabled
+        // return 0xC2E9; // memory encryption AMK (Authentication Master Key)
+        // enabled
+    case 0x3D2D0034: //?
         return (1 << 24) | (1 << 25);
-        //return (1 << 24) | (0 << 25);
-    /* END: from T8030 AP AES */
-    ///
-    case 0x352bc000: // CURRENT_PROD T8015 AP
-        return (current_prod << 0) | (current_secure_mode << 1) | ((security_domain & 3) << 2) | ((board_id & 7) << 4) | ((security_epoch & 0x7f) << 9);
-    case 0x352bc200: // RAW_PROD T8015 AP
-        return (raw_prod << 0) | (raw_secure_mode << 1);
-    case 0x352bc018: // CPRV (Chip Revision) T8015
-        return ((chip_revision & 0x7) << 8) | (((chip_revision & 0x70) >> 4) << 11);
-    case 0x3c100c4c:
-        return 0x1;
-    ///
     default:
         if (((base + addr) & 0x10E70000) == 0x10E70000) {
             return (108 << 4) | 0x200000; //?
@@ -967,16 +1020,49 @@ static const MemoryRegionOps pmgr_unk_reg_ops = {
 static void pmgr_reg_write(void *opaque, hwaddr addr, uint64_t data,
                            unsigned size)
 {
+//    MachineState *machine = MACHINE(opaque);
+//    T8030MachineState *t8030_machine = T8030_MACHINE(opaque);
+//    AppleSEPState *sep;
+//    uint32_t value = data;
+//
+//    if (addr >= 0x80000 && addr <= 0x8C000) {
+//        value = (value & 0xF) << 4 | (value & 0xF);
+//    }
+//#if 1
+//    cpu_dump_state(first_cpu, stderr, CPU_DUMP_CODE);
+//    qemu_log_mask(LOG_UNIMP,
+//                  "PMGR reg WRITE @ 0x" TARGET_FMT_lx " value: 0x" TARGET_FMT_lx
+//                  "\n",
+//                  addr, data);
+//#endif
+//    switch (addr) {
+//    case 0xD4004:
+//        t8030_start_cpus(machine, data);
+//        return;
+//    case 0x80C00:
+//    //case 0x80400: // T8015
+//        cpu_dump_state(first_cpu, stderr, CPU_DUMP_CODE);
+//        sep = APPLE_SEP(object_property_get_link(OBJECT(machine), "sep", &error_fatal));
+//        if (((data >> 31) & 1) == 1) {
+//            apple_a13_cpu_reset(APPLE_A13(sep->cpu));
+//        } else if (((data >> 10) & 1) == 0) {
+//            if (apple_a13_cpu_is_powered_off(APPLE_A13(sep->cpu))) {
+//                apple_a13_cpu_start(APPLE_A13(sep->cpu));
+//            }
+//        } else if (((data >> 10) & 1) == 1) {
+//            apple_a13_cpu_off(APPLE_A13(sep->cpu));
+//        }
+//        break;
+//    }
+//    memcpy(t8030_machine->pmgr_reg + addr, &value, size);
     MachineState *machine = MACHINE(opaque);
     T8030MachineState *t8030_machine = T8030_MACHINE(opaque);
-    AppleSEPState *sep;
     uint32_t value = data;
 
     if (addr >= 0x80000 && addr <= 0x8C000) {
         value = (value & 0xF) << 4 | (value & 0xF);
     }
-#if 1
-    cpu_dump_state(first_cpu, stderr, CPU_DUMP_CODE);
+#if 0
     qemu_log_mask(LOG_UNIMP,
                   "PMGR reg WRITE @ 0x" TARGET_FMT_lx " value: 0x" TARGET_FMT_lx
                   "\n",
@@ -986,20 +1072,6 @@ static void pmgr_reg_write(void *opaque, hwaddr addr, uint64_t data,
     case 0xD4004:
         t8030_start_cpus(machine, data);
         return;
-    case 0x80C00:
-    //case 0x80400: // T8015
-        cpu_dump_state(first_cpu, stderr, CPU_DUMP_CODE);
-        sep = APPLE_SEP(object_property_get_link(OBJECT(machine), "sep", &error_fatal));
-        if (((data >> 31) & 1) == 1) {
-            apple_a13_cpu_reset(APPLE_A13(sep->cpu));
-        } else if (((data >> 10) & 1) == 0) {
-            if (apple_a13_cpu_is_powered_off(APPLE_A13(sep->cpu))) {
-                apple_a13_cpu_start(APPLE_A13(sep->cpu));
-            }
-        } else if (((data >> 10) & 1) == 1) {
-            apple_a13_cpu_off(APPLE_A13(sep->cpu));
-        }
-        break;
     }
     memcpy(t8030_machine->pmgr_reg + addr, &value, size);
 }
