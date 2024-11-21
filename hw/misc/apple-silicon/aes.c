@@ -699,16 +699,6 @@ SysBusDevice *apple_aes_create(DTBNode *node, uint32_t board_id)
     s = APPLE_AES(dev);
     sbd = SYS_BUS_DEVICE(dev);
 
-<<<<<<< HEAD
-    s->board_id = board_id;
-
-    prop = find_dtb_prop(node, "aes-version");
-    if (prop != NULL) {
-        *(uint32_t *)prop->value = 2;
-    }
-
-=======
->>>>>>> master
     prop = find_dtb_prop(node, "reg");
     g_assert_nonnull(prop);
 
