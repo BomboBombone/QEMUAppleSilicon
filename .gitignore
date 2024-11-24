@@ -22,3 +22,4 @@ GTAGS
 *.gcov
 .cache/
 .DS_Store
+!.vscode
