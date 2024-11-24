@@ -351,7 +351,7 @@ static void usb_tcp_host_attach(USBPort *uport)
 
     sock = socket(AF_UNIX, SOCK_STREAM, 0);
 
-    if (socket < 0) {
+    if (sock < 0) {
         error_report("%s: cannot open socket", __func__);
     }
 

@@ -32,6 +32,7 @@
                 "-device", "nvme-ns,drive=drive.6,bus=nvme-bus.0,nsid=6,nstype=6,logical_block_size=4096,physical_block_size=4096",
                 "-drive", "file=nvme.7,format=raw,if=none,id=drive.7",
                 "-device", "nvme-ns,drive=drive.7,bus=nvme-bus.0,nsid=7,nstype=8,logical_block_size=4096,physical_block_size=4096",
+                "-device", "usb-host,hostbus=5,hostport=1"
                 //"-monitor", "telnet:127.0.0.1:1235,server,nowait"
             ],
             "stopAtEntry": false,
